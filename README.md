@@ -20,41 +20,41 @@ pip3 install pgvector
 ```
 
 ## Requirements
-datasets==2.15.0
+<p> datasets==2.15.0
 
-huggingface_hub==0.19.4
+<p> huggingface_hub==0.19.4
 
-langchain==0.0.341
+<p> langchain==0.0.341
 
-pgvector==0.2.4
+<p> pgvector==0.2.4
 
-psycopg2==2.9.9
+<p> psycopg2==2.9.9
 
-SQLAlchemy==2.0.23
+<p> SQLAlchemy==2.0.23
 
-torch==2.1.1+cu118
+<p> torch==2.1.1+cu118
 
-transformers==4.35.2
+<p> transformers==4.35.2
 
-bitsandbytes==0.41.2.post2 (bitsandbytes-windows)
+<p> bitsandbytes==0.41.2.post2 (bitsandbytes-windows)
 
-peft==0.6.2
+<p> peft==0.6.2
 
-accelerate==0.24.1
+<p> accelerate==0.24.1
 
-optimum==1.14.1
+<p> optimum==1.14.1
 
-auto-gptq==0.5.1+cu118
+<p> auto-gptq==0.5.1+cu118
 
-safetensors==0.4.0
+<p> safetensors==0.4.0
 
 
 ### Other Requirements
-PostgreSQL database
+<p> PostgreSQL database
 
-pgvector extension
+<p> pgvector extension
 
-CUDA 11.8
+<p> CUDA 11.8
 
 
 ## Language Model
