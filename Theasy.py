@@ -1,18 +1,21 @@
 
-
-
 import os # file system
 from huggingface_hub import login
+
 # get model & pipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from langchain.llms.huggingface_pipeline import HuggingFacePipeline
+
 # load & process documents
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 # get embeddings
 from langchain.embeddings import HuggingFaceEmbeddings
+
 # save embeddings to vector database
 from langchain.vectorstores.pgvector import PGVector
+
 # RAG chain
 from langchain.chains import RetrievalQA
 
@@ -22,6 +25,7 @@ login(HUGGINGFACEHUB_API_TOKEN)
 
 # Load Model from Huggingface
 model_name = "TheBloke/zephyr-7B-beta-GPTQ"
+
 # To use a different branch, change revision
 # For example: revision="gptq-4bit-32g-actorder_True"
 model = AutoModelForCausalLM.from_pretrained(model_name,
@@ -50,14 +54,14 @@ pipe = pipeline(
 llm = HuggingFacePipeline(pipeline=pipe) # [tokenizer -> model] linked
 
 # Load PDF Files
-pdf_path = "articles"
+pdf_path = "articles" # change the name of the folder where your documents lies
 file_list = os.listdir(pdf_path)
 os.chdir(pdf_path)
 all_contents = []
 for file in file_list:
     file_loader = PyPDFLoader(file)
     file_contents = file_loader.load() # returns splitted "list" of Document objects
-    all_contents.append(file_contents)
+    all_contents.append(file_contents) # list that contains list of Document objects: [[Document, Document..], [Document, Document..], [Document, Document..]..]
 
 # Rearrange Document objects
 documents = []
@@ -77,6 +81,7 @@ model_kwargs = {"device": "cuda"}
 embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwargs) # sentence transformer embeddings
 
 # Vectordb Setup
+## Generate connection string
 connection_string = PGVector.connection_string_from_db_params(driver="YOUR DRIVER", # I used psycopg2, you can use another
                                                               user="YOUR USER",
                                                               password="YOUR PASS",
@@ -84,23 +89,23 @@ connection_string = PGVector.connection_string_from_db_params(driver="YOUR DRIVE
                                                               port="5432",
                                                               database="YOUR DATABASE")
 
-vectordb = PGVector.from_documents(documents=all_splits,
-                                   embedding=embeddings,
+vectordb = PGVector.from_documents(documents = all_splits,
+                                   embedding = embeddings,
                                    collection_name = "articles",
-                                   connection_string=connection_string,
-                                   pre_delete_collection=True)
+                                   connection_string = connection_string,
+                                   pre_delete_collection = True)
 
 retriever = vectordb.as_retriever() # sentence transformer embeddings -> vectordb -> retriever (converted)
 
 #######################
-qa = RetrievalQA.from_chain_type(
+qa_chain = RetrievalQA.from_chain_type(
     llm=llm, # zephyr model
     chain_type="stuff", # (refine, map_reduce, map_rerank) see here: https://python.langchain.com/docs/modules/chains/document/
     retriever=retriever, # sentence transformer in the background
     verbose=True
 )
 
-def run_my_rag(qa, query):
+def rag_chain_run(qa, query):
     result = qa.run(query)
     print("\nResult: ", result)
 
@@ -113,7 +118,7 @@ while 1:
     if query == "exit":
         break
     
-    run_my_rag(qa, query)
+    rag_chain_run(qa_chain, query)
 
 
 
