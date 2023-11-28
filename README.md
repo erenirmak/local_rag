@@ -10,7 +10,9 @@ You can download it from here: https://www.postgresql.org/download/
 
 ## Setup Vector Extension
 PostgreSQL has an extension: pgvector. You can use it to store embeddings.
+
 You can download it from here: https://github.com/pgvector/pgvector
+
 Follow the instructions to install the extension.
 
 Then, install the python package:
