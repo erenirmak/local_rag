@@ -17,7 +17,7 @@ from langchain.vectorstores.pgvector import PGVector
 from langchain.chains import RetrievalQA
 
 # login Huggingface
-HUGGINGFACEHUB_API_TOKEN = "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"
+HUGGINGFACEHUB_API_TOKEN = "YOUR_HUGGINGFACE_API_TOKEN"
 login(HUGGINGFACEHUB_API_TOKEN)
 
 # Load Model from Huggingface
@@ -77,12 +77,12 @@ model_kwargs = {"device": "cuda"}
 embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwargs) # sentence transformer embeddings
 
 # Vectordb Setup
-connection_string = PGVector.connection_string_from_db_params(driver="psycopg2",
-                                                              user="postgres",
-                                                              password="e1r2e3n4",
+connection_string = PGVector.connection_string_from_db_params(driver="YOUR DRIVER", # I used psycopg2, you can use another
+                                                              user="YOUR USER",
+                                                              password="YOUR PASS",
                                                               host="localhost",
                                                               port="5432",
-                                                              database="vectordb")
+                                                              database="YOUR DATABASE")
 
 vectordb = PGVector.from_documents(documents=all_splits,
                                    embedding=embeddings,
@@ -95,7 +95,7 @@ retriever = vectordb.as_retriever() # sentence transformer embeddings -> vectord
 #######################
 qa = RetrievalQA.from_chain_type(
     llm=llm, # zephyr model
-    chain_type="stuff", # refine, map_reduce, map_rerank
+    chain_type="stuff", # (refine, map_reduce, map_rerank) see here: https://python.langchain.com/docs/modules/chains/document/
     retriever=retriever, # sentence transformer in the background
     verbose=True
 )
