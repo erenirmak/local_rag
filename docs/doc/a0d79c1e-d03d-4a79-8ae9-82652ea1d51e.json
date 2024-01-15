@@ -1,0 +1,10 @@
+{
+    "summary": "This code specifies the required packages and their versions for a Python project. It includes packages for datasets, language processing, machine learning libraries, database connectivity, and more. This ensures compatibility and proper functioning of the application.",
+    "details": [
+        {
+            "comment": "This code specifies the required packages and their versions for a Python project. It includes packages for datasets, language processing, machine learning libraries, database connectivity, and more. This ensures compatibility and proper functioning of the application.",
+            "location": "\"/media/root/Prima/works/local_rag/docs/src/requirements.txt\":0-13",
+            "content": "datasets==2.15.0\nhuggingface_hub==0.19.4\nlangchain==0.0.341\npgvector==0.2.4\npsycopg2==2.9.9\nSQLAlchemy==2.0.23\ntorch==2.1.1+cu118\ntransformers==4.35.2\nbitsandbytes==0.41.2.post2\npeft==0.6.2\naccelerate==0.24.1\noptimum==1.14.1\nauto-gptq==0.5.1+cu118\nsafetensors==0.4.0"
+        }
+    ]
+}

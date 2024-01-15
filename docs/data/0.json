@@ -1,0 +1,131 @@
+{
+    "0": {
+        "file_id": 0,
+        "content": "/README.md",
+        "type": "filepath"
+    },
+    "1": {
+        "file_id": 0,
+        "content": "This code sets up a local system for chatting with multiple PDF files using Zephyr-7b-beta, addressing hallucination in LLMs via RAG algorithm. It suggests using PDFs for analysis tasks and encourages users to design UI or dockerize the application.",
+        "type": "summary"
+    },
+    "2": {
+        "file_id": 0,
+        "content": "# Chat with Your Multiple PDFs on Your Local System\nUsing a language model, you can talk with your PDF files. This also lets your language model\ndo less mistakes and hallucinations.\n## Setup Database\nI used PostgreSQL in this project because it is lightweight and robust.\nYou can download it from here: https://www.postgresql.org/download/\n## Setup Vector Extension\nPostgreSQL has an extension: pgvector. You can use it to store embeddings.\nYou can download it from here: https://github.com/pgvector/pgvector\nFollow the instructions to install the extension.\nThen, install the python package:\n```\npip3 install pgvector\n```\n## Requirements\n<p> datasets==2.15.0\n<p> huggingface_hub==0.19.4\n<p> langchain==0.0.341\n<p> pgvector==0.2.4\n<p> psycopg2==2.9.9\n<p> SQLAlchemy==2.0.23\n<p> torch==2.1.1+cu118\n<p> transformers==4.35.2\n<p> bitsandbytes==0.41.2.post2 (bitsandbytes-windows)\n<p> peft==0.6.2\n<p> accelerate==0.24.1\n<p> optimum==1.14.1\n<p> auto-gptq==0.5.1+cu118\n<p> safetensors==0.4.0\n### Other Requirements\n<p> PostgreSQL database",
+        "type": "code",
+        "location": "/README.md:1-55"
+    },
+    "3": {
+        "file_id": 0,
+        "content": "This code is for setting up a local system to chat with multiple PDF files using a language model, utilizing PostgreSQL database and pgvector extension. It also lists the required Python packages and dependencies.",
+        "type": "comment"
+    },
+    "4": {
+        "file_id": 0,
+        "content": "<p> pgvector extension\n<p> CUDA 11.8\n## Language Model\nI used Zephyr-7b-beta in this project. It is state-of-the-art language model\ndeveloped by HuggingfaceH4 on top of the Mistral-7b model.\nBecause of extensive VRAM requirements of the non-quantized model, I used its 4-bit\nquantized version.\nYou can find the model here: https://huggingface.co/TheBloke/zephyr-7B-beta-GPTQ\nFor generating embeddings, I used all-mpnet-base-v2. It is one of the most commonly\nmodels.\nYou can find the model here: https://huggingface.co/sentence-transformers/all-mpnet-base-v2\n## OS & Hardware\nI am currently using Windows 10. If you are using different OS, download & install\nthe packages for your needs.\nI have Nvidia GTX 1660Ti Max-Q Design 6 GB on my laptop and quantized model fits in\nmy GPU, takes up to 5.7 GB of VRAM. If you don't have enough VRAM, you can try\ndifferent model from TheBloke's quantized models that can run on CPU.\n# Talk with Your PDFs\nOne of the main problems with LLMs is that they hallucinate. Retrieval Augmented",
+        "type": "code",
+        "location": "/README.md:57-86"
+    },
+    "5": {
+        "file_id": 0,
+        "content": "This code snippet explains the language model used in the project, which is Zephyr-7b-beta, and provides information about its quantized version due to VRAM requirements. It also mentions using all-mpnet-base-v2 for generating embeddings, details on the OS and hardware used (Windows 10 and Nvidia GTX 1660Ti Max-Q Design), and addresses the problem of hallucination in LLMs by introducing Retrieval Augmented approach.",
+        "type": "comment"
+    },
+    "6": {
+        "file_id": 0,
+        "content": "Generation (RAG) is an algorithm developed by Meta AI researchers. The main idea\nbehind RAG is providing ground truth information to the LLM and let it generate\nits responses based on this information. The source of the information can be\ndocuments, can be databases, datasets or the internet. The responses generated\nby the language model anchored to the facts better and decreases its hallucination\nrates. Also, same approach can be used in analyzing, summarizing or deriving\ninformation using your documents.\nPut your PDF files in a folder and talk with the model. I provided some example\nacademic articles. You can use this approach in analyzing and summarizing CVs,\nnews, etc. And that's it. :)\nYou can design UI with web frameworks like Flask and even dockerize it. Now, you\nhave your own local language model that always up. You don't have to share your\nprivate documents with 3rd parties to get the summarization. You can even use\nthe model to write your homework articles. :) Shhh\nEnjoy!",
+        "type": "code",
+        "location": "/README.md:87-104"
+    },
+    "7": {
+        "file_id": 0,
+        "content": "The code introduces RAG algorithm, explaining its purpose to provide ground truth information for LLMs and decrease hallucination rates. It suggests using PDF files for analysis and summarization tasks, mentioning possible applications in CVs, news, and homework articles. The code also encourages users to design a UI with Flask or dockerize the application for local usage, ensuring privacy of documents.",
+        "type": "comment"
+    },
+    "8": {
+        "file_id": 1,
+        "content": "/Theasy.py",
+        "type": "filepath"
+    },
+    "9": {
+        "file_id": 1,
+        "content": "This code initializes NLP models, sets up LangChain chain with Zephyr LLM and RetrievalQA, connects to PostgreSQL, and creates a function for chat execution. It checks if the input is \"exit\" and terminates if true, otherwise runs 'rag_chain_run' with given query.",
+        "type": "summary"
+    },
+    "10": {
+        "file_id": 1,
+        "content": "import os # file system\nfrom huggingface_hub import login\n# get model & pipeline\nfrom transformers import AutoModelForCausalLM, AutoTokenizer, pipeline\nfrom langchain.llms.huggingface_pipeline import HuggingFacePipeline\n# load & process documents\nfrom langchain.document_loaders import PyPDFLoader\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\n# get embeddings\nfrom langchain.embeddings import HuggingFaceEmbeddings\n# save embeddings to vector database\nfrom langchain.vectorstores.pgvector import PGVector\n# RAG chain\nfrom langchain.chains import RetrievalQA\n# login Huggingface\nHUGGINGFACEHUB_API_TOKEN = \"YOUR_HUGGINGFACE_API_TOKEN\"\nlogin(HUGGINGFACEHUB_API_TOKEN)\n# Load Model from Huggingface\nmodel_name = \"TheBloke/zephyr-7B-beta-GPTQ\"\n# To use a different branch, change revision\n# For example: revision=\"gptq-4bit-32g-actorder_True\"\nmodel = AutoModelForCausalLM.from_pretrained(model_name,\n                                             device_map=\"auto\",\n                                             trust_remote_code=False,",
+        "type": "code",
+        "location": "/Theasy.py:2-33"
+    },
+    "11": {
+        "file_id": 1,
+        "content": "The code is loading a model and pipeline for natural language processing, retrieving and processing documents, getting embeddings from a database, initializing a RAG chain for retrieval-based QA tasks, logging into HuggingFace, and loading a specific model from the HuggingFace repository. The code also specifies an API token and a model name with a revision.",
+        "type": "comment"
+    },
+    "12": {
+        "file_id": 1,
+        "content": "                                             revision=\"main\")\ntokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)\n# Create Pipeline\npipe = pipeline(\n        \"text-generation\",\n        model=model,\n        tokenizer=tokenizer,\n        use_cache=True,\n        device_map=\"auto\",\n        max_length=5000,\n        do_sample=True,\n        top_k=5,\n        num_return_sequences=1,\n        eos_token_id=tokenizer.eos_token_id,\n        pad_token_id=tokenizer.eos_token_id,\n)\n# LangChain LLM definition based on pipeline\nllm = HuggingFacePipeline(pipeline=pipe) # [tokenizer -> model] linked\n# Load PDF Files\npdf_path = \"articles\" # change the name of the folder where your documents lies\nfile_list = os.listdir(pdf_path)\nos.chdir(pdf_path)\nall_contents = []\nfor file in file_list:\n    file_loader = PyPDFLoader(file)\n    file_contents = file_loader.load() # returns splitted \"list\" of Document objects\n    all_contents.append(file_contents) # list that contains list of Document objects: [[Document, Document..], [Document, Document..], [Document, Document..]..]",
+        "type": "code",
+        "location": "/Theasy.py:34-64"
+    },
+    "13": {
+        "file_id": 1,
+        "content": "The code initializes a text generation pipeline using the Hugging Face library. It defines a LangChain LLM based on this pipeline, loads PDF files from a specified directory, and stores them in a list of lists containing Document objects.",
+        "type": "comment"
+    },
+    "14": {
+        "file_id": 1,
+        "content": "# Rearrange Document objects\ndocuments = []\nfor doc_list in all_contents:\n    if type(doc_list) == list:\n        for doc in doc_list:\n            documents.append(doc)\n    else:\n        documents.append(doc_list)\ntext_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=20)\nall_splits = text_splitter.split_documents(documents)\n# Embedding setup\nmodel_name = \"sentence-transformers/all-mpnet-base-v2\"\nmodel_kwargs = {\"device\": \"cuda\"}\nembeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwargs) # sentence transformer embeddings\n# Vectordb Setup\n## Generate connection string\nconnection_string = PGVector.connection_string_from_db_params(driver=\"YOUR DRIVER\", # I used psycopg2, you can use another\n                                                              user=\"YOUR USER\",\n                                                              password=\"YOUR PASS\",\n                                                              host=\"localhost\",\n                                                              port=\"5432\",",
+        "type": "code",
+        "location": "/Theasy.py:66-89"
+    },
+    "15": {
+        "file_id": 1,
+        "content": "Rearranges Document objects, splits documents into chunks using RecursiveCharacterTextSplitter, sets up sentence transformers embeddings and initializes VectorDB with a PostgreSQL connection string.",
+        "type": "comment"
+    },
+    "16": {
+        "file_id": 1,
+        "content": "                                                              database=\"YOUR DATABASE\")\nvectordb = PGVector.from_documents(documents = all_splits,\n                                   embedding = embeddings,\n                                   collection_name = \"articles\",\n                                   connection_string = connection_string,\n                                   pre_delete_collection = True)\nretriever = vectordb.as_retriever() # sentence transformer embeddings -> vectordb -> retriever (converted)\n#######################\nqa_chain = RetrievalQA.from_chain_type(\n    llm=llm, # zephyr model\n    chain_type=\"stuff\", # (refine, map_reduce, map_rerank) see here: https://python.langchain.com/docs/modules/chains/document/\n    retriever=retriever, # sentence transformer in the background\n    verbose=True\n)\ndef rag_chain_run(qa, query):\n    result = qa.run(query)\n    print(\"\\nResult: \", result)\nprint(\"Welcome to chat interface! Please type your query:\")\n# RAG experiment:\nwhile 1:\n    query = input(\"Custom query: \")",
+        "type": "code",
+        "location": "/Theasy.py:90-117"
+    },
+    "17": {
+        "file_id": 1,
+        "content": "This code is setting up a language model chain using the LangChain library. It uses a Zephyr model as the LLM, and the RetrievalQA chain type with refine, map_reduce, and map_rerank functionalities. The code also includes a function `rag_chain_run` for executing the chain and retrieves results based on user input queries in a chat interface.",
+        "type": "comment"
+    },
+    "18": {
+        "file_id": 1,
+        "content": "    if query == \"exit\":\n        break\n    rag_chain_run(qa_chain, query)",
+        "type": "code",
+        "location": "/Theasy.py:118-121"
+    },
+    "19": {
+        "file_id": 1,
+        "content": "This code snippet checks if the input query is \"exit\" and terminates the loop if it is. Otherwise, it calls the function 'rag_chain_run' with the existing qa_chain and the current query as arguments.",
+        "type": "comment"
+    },
+    "20": {
+        "file_id": 2,
+        "content": "/requirements.txt",
+        "type": "filepath"
+    },
+    "21": {
+        "file_id": 2,
+        "content": "This code specifies the required packages and their versions for a Python project. It includes packages for datasets, language processing, machine learning libraries, database connectivity, and more. This ensures compatibility and proper functioning of the application.",
+        "type": "summary"
+    },
+    "22": {
+        "file_id": 2,
+        "content": "datasets==2.15.0\nhuggingface_hub==0.19.4\nlangchain==0.0.341\npgvector==0.2.4\npsycopg2==2.9.9\nSQLAlchemy==2.0.23\ntorch==2.1.1+cu118\ntransformers==4.35.2\nbitsandbytes==0.41.2.post2\npeft==0.6.2\naccelerate==0.24.1\noptimum==1.14.1\nauto-gptq==0.5.1+cu118\nsafetensors==0.4.0",
+        "type": "code",
+        "location": "/requirements.txt:1-14"
+    },
+    "23": {
+        "file_id": 2,
+        "content": "This code specifies the required packages and their versions for a Python project. It includes packages for datasets, language processing, machine learning libraries, database connectivity, and more. This ensures compatibility and proper functioning of the application.",
+        "type": "comment"
+    }
+}
