@@ -1,0 +1,13 @@
+{
+    "/README.md": "Zephyr-7b-beta: PDF Chat System with RAG Hallucination Mitigation",
+    "/README.md:1-55": "Local Chat System with PDFs and PGVector",
+    "/README.md:57-86": "Zephyr-7b-beta: Quantized Language Model with Retrieval Augmented Approach",
+    "/README.md:87-104": "RAG Algorithm for Ground Truth LLMs",
+    "/Theasy.py": "Initializing NLP Models and LangChain Chains",
+    "/Theasy.py:118-121": "Exit Loop Check",
+    "/Theasy.py:2-33": "NLP Pipeline Setup",
+    "/Theasy.py:34-64": "PDF Document Loader with Hugging Face Pipeline",
+    "/Theasy.py:66-89": "Document Processing Pipeline",
+    "/Theasy.py:90-117": "Zephyr Model Chain with LangChain Library",
+    "/requirements.txt": "Python Project Dependencies"
+}

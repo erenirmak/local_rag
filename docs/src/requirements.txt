@@ -1,0 +1,14 @@
+datasets==2.15.0
+huggingface_hub==0.19.4
+langchain==0.0.341
+pgvector==0.2.4
+psycopg2==2.9.9
+SQLAlchemy==2.0.23
+torch==2.1.1+cu118
+transformers==4.35.2
+bitsandbytes==0.41.2.post2
+peft==0.6.2
+accelerate==0.24.1
+optimum==1.14.1
+auto-gptq==0.5.1+cu118
+safetensors==0.4.0
